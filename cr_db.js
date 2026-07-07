@@ -1,30 +1,48 @@
 const express = require('express')
 const connectDB = require("./config/connection_db.js");
 const User = require("./Models/userModel.js")
-const app = express()
 
-connectDB();
-const add = async (req, res) => {
+const app = express()
+const PORT = 4000
+
+app.use(express.json())
+
+app.get('/', (req, res) => {
+    res.send("Server is running")
+})
+
+app.get('/add', async (req, res) => {
     try {
-        await User.create({
-            name: "Ali",
+        const user = await User.create({
+            name: "Hafeez new",
             age: 23
         })
-        // res.send("User Added");
+        res.status(201).json({
+            message: "User added",
+            user
+        })
     } catch (error) {
-        console.log(error)
-        // res.status(500).send("Error");
+        console.error(error)
+        res.status(500).json({
+            message: "Error adding user"
+        })
     }
-}
-// app.listen(4000)
-add()
+})
 
-const getuser = async () => {
+app.get('/users', async (req, res) => {
     try {
-        const users = User.find()
-        console.log(users)
+        const users = await User.find()
+        res.json(users)
     } catch (error) {
-
+        console.error(error)
+        res.status(500).json({
+            message: "Error getting users"
+        })
     }
-}
-getuser()
+})
+
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`)
+    })
+})

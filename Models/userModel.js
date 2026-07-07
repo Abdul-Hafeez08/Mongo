@@ -3,6 +3,11 @@ const mongoose = require('mongoose')
 const userModel = new mongoose.Schema({
     name: String,
     age: Number
-})
 
-module.exports = mongoose.model("User", userModel)
+},
+    {
+        versionKey: false
+    }
+)
+
+module.exports = mongoose.model("Student", userModel, "students")
